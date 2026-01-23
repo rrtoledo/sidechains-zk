@@ -12,9 +12,9 @@ use crate::{AssignedCondition, AssignedValue};
 use ff::{Field, PrimeField};
 use group::prime::PrimeCurveAffine;
 use group::{Curve, Group};
-use halo2_proofs::circuit::{Chip, Value};
-use halo2_proofs::plonk::{ConstraintSystem, Error};
-use blstrs::{Base, Fr as JubjubScalar, JubjubAffine, JubjubExtended, JubjubSubgroup};
+use midnight_proofs::circuit::{Chip, Value};
+use midnight_proofs::plonk::{ConstraintSystem, Error};
+use midnight_curves::{Base, Fr as JubjubScalar, JubjubAffine, JubjubExtended, JubjubSubgroup};
 use num_integer::Integer;
 
 /// Type of an Assigned Schnorr Signature
@@ -389,11 +389,11 @@ mod tests {
     use crate::signatures::primitive::schnorr::Schnorr;
     use ff::Field;
     use group::{Curve, Group};
-    use halo2_proofs::circuit::{Layouter, SimpleFloorPlanner};
-    use halo2_proofs::dev::MockProver;
-    use halo2_proofs::plonk::Circuit;
-    use blstrs::{JubjubExtended, Fr as JubjubScalar};
-    use halo2curves::CurveAffine;
+    use midnight_proofs::circuit::{Layouter, SimpleFloorPlanner};
+    use midnight_proofs::dev::MockProver;
+    use midnight_proofs::plonk::Circuit;
+    use midnight_curves::{JubjubExtended, Fr as JubjubScalar};
+    use midnight_curves::CurveAffine;
     use rand_chacha::ChaCha8Rng;
     use rand_core::SeedableRng;
     use std::ops::Mul;

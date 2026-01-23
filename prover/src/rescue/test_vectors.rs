@@ -10,7 +10,7 @@
 //! - four random key-input pairs
 //! The random seed used is 0.
 
-use blstrs::Scalar;
+use midnight_curves::bls12_381::{Fq as Scalar};
 use ff::Field;
 use crate::rescue::primitive::RescueState;
 

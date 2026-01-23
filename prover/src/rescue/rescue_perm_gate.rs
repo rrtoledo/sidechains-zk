@@ -4,7 +4,7 @@
 use std::marker::PhantomData;
 
 use ff::PrimeField;
-use halo2_proofs::{
+use midnight_proofs::{
     circuit::Chip,
     plonk::{ConstraintSystem, Error},
 };
@@ -466,9 +466,9 @@ where
 // mod tests {
 //     use super::*;
 //     use crate::rescue::test_vectors::*;
-//     use halo2_proofs::circuit::{Layouter, SimpleFloorPlanner, Value};
-//     use halo2_proofs::dev::MockProver;
-//     use halo2_proofs::plonk::Circuit;
+//     use midnight_proofs::circuit::{Layouter, SimpleFloorPlanner, Value};
+//     use midnight_proofs::dev::MockProver;
+//     use midnight_proofs::plonk::Circuit;
 //     use pasta_curves::{Fp, Fq};
 //
 //     #[derive(Clone)]

@@ -1,10 +1,10 @@
 use super::AssignedEccPoint;
 use crate::util::RegionCtx;
 use crate::AssignedCondition;
-use blstrs::Base as JubjubBase;
+use midnight_curves::Base as JubjubBase;
 use ff::{Field, PrimeField};
-use halo2_proofs::utils::rational::Rational;
-use halo2_proofs::{
+use midnight_proofs::utils::rational::Rational;
+use midnight_proofs::{
     plonk::{Advice, Column, ConstraintSystem, Constraints, Error, Expression, Selector},
     poly::Rotation,
 };
@@ -109,8 +109,9 @@ impl CondAddConfig {
     }
 
     fn create_gate(&self, meta: &mut ConstraintSystem<JubjubBase>) {
+        let q_add = meta.selector();
+        
         meta.create_gate("complete addition", |meta| {
-            let q_add = meta.query_selector(self.q_add);
             let b = meta.query_advice(self.b, Rotation::cur());
             let x_p = meta.query_advice(self.x_pr, Rotation::cur());
             let y_p = meta.query_advice(self.y_pr, Rotation::cur());
@@ -158,7 +159,7 @@ impl CondAddConfig {
 
             Constraints::with_selector(
                 q_add,
-                [("x_r constraint", poly1), ("y_r constraint", poly2)],
+                [poly1, poly2].to_vec(),
             )
         });
     }
@@ -227,11 +228,11 @@ mod tests {
     use crate::ecc::chip::{AffinePoint, EccChip, EccConfig, EccInstructions};
     use crate::main_gate::{MainGate, MainGateConfig};
     use crate::util::RegionCtx;
-    use blstrs::{Base as JubjubBase, JubjubAffine, JubjubExtended};
+    use midnight_curves::{Base as JubjubBase, JubjubAffine, JubjubExtended};
     use group::{Curve, Group};
-    use halo2_proofs::circuit::{Layouter, SimpleFloorPlanner, Value};
-    use halo2_proofs::dev::MockProver;
-    use halo2_proofs::plonk::{Circuit, ConstraintSystem, Error};
+    use midnight_proofs::circuit::{Layouter, SimpleFloorPlanner, Value};
+    use midnight_proofs::dev::MockProver;
+    use midnight_proofs::plonk::{Circuit, ConstraintSystem, Error};
     use rand_chacha::ChaCha8Rng;
     use rand_core::SeedableRng;
 

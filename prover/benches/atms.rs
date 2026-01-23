@@ -8,14 +8,14 @@ use atms_halo2::{
     util::RegionCtx,
 };
 use blake2b_simd::State as Blake2bState;
-use blstrs::{Base, JubjubAffine as AffinePoint};
-use blstrs::Bls12;
+use midnight_curves::{Base, JubjubAffine as AffinePoint};
+use midnight_curves::Bls12;
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 use ff::Field;
-use halo2_proofs::plonk::k_from_circuit;
-use halo2_proofs::poly::kzg::KZGCommitmentScheme;
-use halo2_proofs::utils::SerdeFormat;
-use halo2_proofs::{
+use midnight_proofs::plonk::k_from_circuit;
+use midnight_proofs::poly::kzg::KZGCommitmentScheme;
+use midnight_proofs::utils::SerdeFormat;
+use midnight_proofs::{
     circuit::{Layouter, SimpleFloorPlanner, Value},
     plonk::{create_proof, keygen_pk, keygen_vk, Circuit, ConstraintSystem, Error},
     poly::kzg::params::ParamsKZG,
@@ -202,10 +202,12 @@ fn atms_bench_helper(c: &mut Criterion, num_parties: usize, threshold: usize) {
         b.iter(|| {
             let mut transcript: CircuitTranscript<Blake2bState> =
                 CircuitTranscript::<Blake2bState>::init();
+                let nb_committed_instances = 0;
             create_proof::<Base, KZGCommitmentScheme<_>, _, _>(
                 &kzg_params,
                 &pk,
                 &[circuit.clone()],
+                nb_committed_instances,
                 &[&[&[pks_comm, msg, Base::from(threshold as u64)]]],
                 &mut rng,
                 &mut transcript,

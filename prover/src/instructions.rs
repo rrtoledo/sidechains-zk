@@ -7,7 +7,7 @@ use crate::main_gate::{ColumnTags, MainGateColumn};
 use crate::util::{big_to_fe, decompose, fe_to_big, power_of_two, RegionCtx};
 use crate::{AssignedCondition, AssignedValue};
 use ff::PrimeField;
-use halo2_proofs::{
+use midnight_proofs::{
     utils::arithmetic::Field,
     circuit::{Chip, Layouter, Value},
     plonk::Error,

@@ -6,7 +6,7 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
 
-use halo2_proofs::circuit::AssignedCell;
+use midnight_proofs::circuit::AssignedCell;
 
 pub mod ecc;
 pub mod instructions;

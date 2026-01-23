@@ -1,11 +1,11 @@
 //! Chip implementations for the ECC gadgets.
 
-use blstrs::{Base as JubjubBase, Fr as JubjubScalar, JubjubAffine};
+use midnight_curves::{Base as JubjubBase, Fr as JubjubScalar, JubjubAffine};
 use ff::{Field, PrimeField};
 use group::prime::PrimeCurveAffine;
 use group::{Curve, Group};
-use halo2_proofs::plonk::Instance;
-use halo2_proofs::{
+use midnight_proofs::plonk::Instance;
+use midnight_proofs::{
     circuit::{Chip, Layouter, Value},
     plonk::{Advice, Column, ConstraintSystem, Error},
 };
@@ -666,13 +666,13 @@ mod tests {
     use crate::ecc::chip::{AffinePoint, EccChip, EccConfig, EccInstructions};
     use crate::main_gate::{MainGate, MainGateConfig};
     use crate::util::RegionCtx;
-    use blstrs::{Base as JubjubBase, Fr as JubjubScalar, JubjubAffine, JubjubExtended, JubjubSubgroup};
+    use midnight_curves::{Base as JubjubBase, Fr as JubjubScalar, JubjubAffine, JubjubExtended, JubjubSubgroup};
     use ff::Field;
     use group::prime::PrimeCurveAffine;
     use group::{Curve, Group};
-    use halo2_proofs::circuit::{Layouter, SimpleFloorPlanner, Value};
-    use halo2_proofs::dev::MockProver;
-    use halo2_proofs::plonk::{Circuit, ConstraintSystem, Error};
+    use midnight_proofs::circuit::{Layouter, SimpleFloorPlanner, Value};
+    use midnight_proofs::dev::MockProver;
+    use midnight_proofs::plonk::{Circuit, ConstraintSystem, Error};
     use rand_chacha::ChaCha8Rng;
     use rand_core::SeedableRng;
     use std::ops::Mul;
