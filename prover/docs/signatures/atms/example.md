@@ -2,24 +2,24 @@
  Here we provide an example to demonstrate how ATMS circuit is used.
  ```rust
  use ff::Field;
- use halo2_proofs::poly::commitment::Params;
- use halo2_proofs::{
+ use midnight_proofs::poly::commitment::Params;
+ use midnight_proofs::{
      circuit::{Layouter, SimpleFloorPlanner, Value},
      plonk::{create_proof, keygen_pk, keygen_vk, Circuit, ConstraintSystem, Error},
      poly::{commitment::Guard, kzg::params::ParamsKZG},
      transcript::{CircuitTranscript, Transcript},
  };
- use blstrs::{Bls12, JubjubAffine as AffinePoint, Base, JubjubExtended as ExtendedPoint, JubjubSubgroup as SubgroupPoint};
+ use midnight_curves::{Bls12, JubjubAffine as AffinePoint, Base, JubjubExtended as ExtendedPoint, JubjubSubgroup as SubgroupPoint};
  use rand::prelude::IteratorRandom;
  use rand_core::SeedableRng;
  use std::fs::{create_dir_all, File};
  use std::io::{BufReader, Write};
  use std::path::Path;
  use group::Group;
- use halo2_proofs::dev::MockProver;
+ use midnight_proofs::dev::MockProver;
  use crate::atms_halo2::ecc::chip::EccInstructions;
  use crate::atms_halo2::instructions::MainGateInstructions;
- use crate::atms_halo2::rescue::{RescueParametersBls, RescueSponge};
+ use crate::atms_halo2::rescue::{default_padding, RescueParametersBls, RescueSponge};
  use crate::atms_halo2::signatures::atms::{AtmsVerifierConfig, AtmsVerifierGate};
  use crate::atms_halo2::signatures::primitive::schnorr::Schnorr;
  use crate::atms_halo2::signatures::schnorr::SchnorrSig;
@@ -79,6 +79,7 @@
                          }
                      })
                      .collect::<Result<Vec<_>, Error>>()?;
+
                  let assigned_pks = self
                      .pks
                      .iter()
@@ -151,16 +152,21 @@ fn main() {
 
      let mut flattened_pks = Vec::with_capacity(keypairs.len() * 2);
      for (_, pk) in &keypairs {
-         flattened_pks.push(pk.get_u());
+        flattened_pks.push(pk.get_u());
      }
 
-     let pks_comm = RescueSponge::<Base, RescueParametersBls>::hash(&flattened_pks, None);
+     let pks_comm = RescueSponge::<Base, RescueParametersBls>::hash(&flattened_pks, Some(default_padding::<Base, RescueParametersBls>));
 
      let signing_parties = (0..NUM_PARTIES).choose_multiple(&mut rng, THRESHOLD);
      let signatures = (0..NUM_PARTIES)
          .map(|index| {
              if signing_parties.contains(&index) {
-                 Some(Schnorr::sign(keypairs[index], msg, &mut rng))
+                let sigma = Schnorr::sign(keypairs[index], msg, &mut rng);
+                println!("\nindex {}:", index); 
+                println!("keys {:?}:", keypairs[index]); 
+                println!("msg {:?}:", msg); 
+                println!("sigma {:?}:", sigma); 
+                Some(sigma)
              } else {
                  None
              }
@@ -176,6 +182,9 @@ fn main() {
      };
 
      let pi = vec![vec![pks_comm, msg, Base::from(THRESHOLD as u64)]];
+     println!("\npks_comm {}:", pks_comm); 
+     println!("\nmsg {}:", msg); 
+     println!("\nTHRESHOLD {}:", Base::from(THRESHOLD as u64)); 
 
      let prover =
          MockProver::run(K, &circuit, pi).expect("Failed to run ATMS verifier mock prover");
