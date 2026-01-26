@@ -251,6 +251,8 @@ mod tests {
     impl Circuit<JubjubBase> for TestCircuit {
         type Config = TestCircuitConfig;
         type FloorPlanner = SimpleFloorPlanner;
+        #[cfg(feature = "circuit-params")]
+        type Params = ();
 
         fn without_witnesses(&self) -> Self {
             Self::default()
